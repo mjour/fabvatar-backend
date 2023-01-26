@@ -1,0 +1,42 @@
+{
+  "name": "poc-hyperledger-indy-21084020-node",
+  "version": "1.0.0",
+  "description": "This folder contains a demonstration of basic Hyperledger Indy Agents. The agents provide a web browser interface to show establishing relationships between agents, issuing Verifiable Credentials, and proving claims from Verifiable Credentials.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "mocha test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://gitlab.mobiloitte.com/root/poc-hyperledger-indy-21084020-node.git"
+  },
+  "author": "Aashutosh Kunwar",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "ejs": "~2.5.7",
+    "express": "^4.18.1",
+    "express-session": "^1.15.6",
+    "express-fileupload": "^1.1.6",
+    "home-dir": "^1.0.0",
+    "http-errors": "~1.6.2",
+    "js-yaml": "^4.1.0",
+    "json-stringify-pretty-compact": "^1.2.0",
+    "morgan": "~1.9.1",
+    "request": "^2.87.0",
+    "request-promise": "^4.2.2",
+    "request-promise-native": "^1.0.5",
+    "session-file-store": "^1.2.0",
+    "indy-sdk": "1.6.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1",
+    "sinon": "^5.0.7"
+  }
+}

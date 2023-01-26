@@ -1,0 +1,29 @@
+{
+  "name": "node_process",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.32.0",
+    "config": "^3.3.8",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "fs": "^0.0.1-security",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.6.1",
+    "morgan": "^1.10.0",
+    "qrcode": "^1.5.1",
+    "shelljs": "^0.8.5",
+    "swagger-jsdoc": "^4.3.2",
+    "swagger-ui-express": "^4.1.4"
+  }
+}

@@ -1,0 +1,32 @@
+{
+    "development": {
+        "host": "localhost",
+        "database": "Indy-node",
+        "port": 1948,
+        "swaggerURL": "localhost:1948",
+        "jwtsecret": "indy",
+        "cloudinary": {
+            "cloud_name": "mobiloittetech",
+            "api_key": "917389355349765",
+            "api_secret": "4LHCjazOQnnsjMZKTX5nuG5txRs"
+        },
+        "sendGridKey": "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",
+        "ip": "173.17.0.152",
+        "dockerPort": 3002
+    },
+    "staging": {
+        "host": "localhost",
+        "database": "Indy-node",
+        "port": 1948,
+        "swaggerURL": "ec2-54-234-138-40.compute-1.amazonaws.com:1948",
+        "jwtsecret": "indy",
+        "cloudinary": {
+            "cloud_name": "mobiloittetech",
+            "api_key": "917389355349765",
+            "api_secret": "4LHCjazOQnnsjMZKTX5nuG5txRs"
+        },
+        "sendGridKey": "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",
+        "ip": "ec2-54-234-138-40.compute-1.amazonaws.com",
+        "dockerPort": 3002
+    }
+}

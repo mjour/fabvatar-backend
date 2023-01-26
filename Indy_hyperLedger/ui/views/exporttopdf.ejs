@@ -1,0 +1,107 @@
+<%for(let credential of credentials) {%>
+  <div id="exporttopdf-<%=credential.referent%>" style="display: none; height: 87vh;overflow-y: auto;" class="hidden-page">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+          <title></title>
+          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+          <script type="text/javascript">
+              $("#btnPrint-<%=credential.referent%>").live("click", function () {
+                  var divContents = $("#dvContainer-<%=credential.referent%>").html();
+                  console.log("divContents = ", divContents)
+                  var printWindow = window.open('', '', 'height=400,width=800');
+                  printWindow.document.write('<html><head><title>DIV Contents</title>');
+                  printWindow.document.write('</head><body >');
+                  printWindow.document.write(divContents);
+                  printWindow.document.write('</body></html>');
+                  printWindow.document.close();
+                  printWindow.print();
+              });
+          </script>
+      </head>
+      <body>
+          <form id="form1">
+          <div id="dvContainer-<%=credential.referent%>">
+              <head>
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <style>
+                  * {
+                    box-sizing: border-box;
+                  }
+                  
+                  .menu {
+                    float: left;
+                    width: 20%;
+                    text-align: center;
+                  }
+                  
+                  .menu a {
+                    background-color: #e5e5e5;
+                    padding: 8px;
+                    margin-top: 7px;
+                    display: block;
+                    width: 100%;
+                    color: black;
+                  }
+                  
+                  .main {
+                    float: left;
+                    width: 60%;
+                    padding: 0 20px;
+                  }
+                  
+                  .right {
+                    background-color: #e5e5e5;
+                    float: left;
+                    width: 20%;
+                    padding: 15px;
+                    margin-top: 7px;
+                    text-align: center;
+                  }
+                  
+                  @media only screen and (max-width: 620px) {
+                    /* For mobile phones: */
+                    .menu, .main, .right {
+                      width: 100%;
+                    }
+                  }
+                  </style>
+                </head>
+                <body style="font-family:Verdana;">
+                  
+                  <div style="background-color:hwb(99 84% 8%);padding:15px;text-align:center;">
+                    <img class="w3-center w3-bar-item" width="96px" height="96px" src="https://farm66.staticflickr.com/65535/52578819109_3f82c92d72_m.jpg">
+                    <h1>Customer Service: 888-377-7757</h1>
+                    <p style="margin-top: 0.5rem;">I'm not with the utility</p>
+                  </div>
+                  <div style="overflow:auto">
+                    <div class="menu">
+                      <%if(Object.keys(credential.attrs).indexOf('photo_url') > -1) {%>
+                        <img class="w3-center w3-bar-item" width="96px" height="96px" src="<%=credential.attrs['photo_url']%>">
+                      <%} else { %>
+                        <img width="96" height="96" src="https://live.staticflickr.com/65535/52574419843_a52dcf984d_m.jpg">
+                      <%}%>
+                      
+                    </div>
+                    <div class="main">
+                      <img class="w3-center w3-bar-item" width="32px" height="32px" src="https://farm66.staticflickr.com/65535/52578819109_3f82c92d72_m.jpg">
+                
+                      <%for(let attr of Object.keys(credential.attrs).sort()) {%>
+                        <%if(!attr.includes('photo') && !attr.includes('Customer Service')) {%>
+                          <%if(credential.attrs[attr] !== undefined && credential.attrs[attr] != null && credential.attrs[attr] != "" && credential.attrs[attr].trim() != "") {%>
+                            <h2><%=attr%>: <%=credential.attrs[attr]%></h2>
+                          <%} else { %>
+                            <h2><%=attr%></h2>
+                          <%}%>
+                        <%}%>
+                      <%}%>
+                    </div>
+                  </div>
+                  <div style="background-color:#e5e5e5;text-align:center;padding:10px;margin-top:7px;">© copyright Fabvatar</div>
+                </body>
+          </div>
+          <input type="button" value="Print Div Contents" id="btnPrint-<%=credential.referent%>" style="margin-top: 0.5rem" class="w3-btn w3-white w3-border" />
+          </form>
+      </body>
+      </html>
+  </div>
+<%}%>

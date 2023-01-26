@@ -1,0 +1,150 @@
+<%for(let credential of credentials) {%>
+  <div id="landing-<%=credential.referent%>" style="display: none; height: 87vh;overflow-y: auto;" class="hidden-page">
+    <style>
+    * {
+      box-sizing: border-box;
+    }
+  
+    .menu {
+      float: left;
+      width: 20%;
+      text-align: center;
+    }
+  
+    .menu a {
+      background-color: #e5e5e5;
+      padding: 8px;
+      margin-top: 7px;
+      display: block;
+      width: 100%;
+      color: black;
+    }
+  
+    .main {
+      float: left;
+      width: 60%;
+      padding: 0 20px;
+      text-align: left;
+    }
+  
+    .right {
+      background-color: #e5e5e5;
+      float: left;
+      width: 20%;
+      padding: 15px;
+      margin-top: 7px;
+      text-align: center;
+    }
+    .qr-code-container {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+  
+      @media screen and (max-width: 50em) {
+        width: 100%;
+        margin: 8rem 0;
+      }
+    }
+    .qr-code-container button {
+      width: 100%;
+    }
+  
+    .qr-code {
+      display: flex;
+      border-radius: 1rem;
+      width: fit-content;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem;
+    }
+  
+    @media only screen and (max-width: 620px) {
+      /* For mobile phones: */
+      .menu, .main, .right {
+        width: 100%;
+      }
+    }
+    </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jdenticon@2.0.0"></script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  
+    <div style="background-color:hwb(99 84% 8%);padding:15px;text-align:center;">
+      <img class="w3-center w3-bar-item" width="96px" height="96px" src="https://farm66.staticflickr.com/65535/52578819109_3f82c92d72_m.jpg">
+      <h1>Customer Service: 888-377-7757</h1>
+      <p style="margin-top: 0.5rem;">I'm not with the utility</p>
+    </div>
+  
+    <div style="overflow:auto; margin-top: 0.5rem;">
+      <div class="menu">
+        <%if(Object.keys(credential.attrs).indexOf('photo_url') > -1) {%>
+          <img class="w3-center w3-bar-item" width="96px" height="96px" src="<%=credential.attrs['photo_url']%>">
+        <%} else { %>
+          <img width="96" height="96" src="https://live.staticflickr.com/65535/52574419843_a52dcf984d_m.jpg">
+        <%}%>
+        <a href="#exporttopdf-<%=credential.referent%>" onclick="exportHtml('exporttopdf-<%=credential.referent%>')">Export to PDF</a>
+        <a onclick="generateQRCode('qrcode-<%=credential.referent%>')" style="cursor: pointer;">Generate QR Code</a>
+      </div>
+  
+      <div class="main">
+        <img class="w3-center w3-bar-item" width="32px" height="32px" src="https://farm66.staticflickr.com/65535/52578819109_3f82c92d72_m.jpg">
+        <%for(let attr of Object.keys(credential.attrs).sort()) {%>
+          <%if(!attr.includes('photo_url') && !attr.includes('Customer Service')) {%>
+            <%if(credential.attrs[attr] !== undefined && credential.attrs[attr] != null && credential.attrs[attr] != "" && credential.attrs[attr].trim() != "") {%>
+              <h2><%=attr%>: <%=credential.attrs[attr]%></h2>
+            <%} else { %>
+              <h2><%=attr%></h2>
+            <%}%>
+          <%}%>
+        <%}%>
+      </div>
+    </div>
+    <div style="background-color:#e5e5e5;text-align:center;padding:10px;margin-top:7px;">© copyright Fabvatar</div>
+    <div class="qr-code-container">
+      <div id='qrcode-<%=credential.referent%>'></div>
+    </div>
+  
+    <script>
+      
+      function generateQRCode (id) {
+        let qr_code_element = document.querySelector("#"+id);
+        if (qr_code_element.getElementsByTagName('img')[0] != null) return;
+        qr_code_element.style = "";
+  
+        var qrcode = new QRCode(qr_code_element, {
+          text: window.location.href,
+          width: 180, //128
+          height: 180,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+  
+        let download = document.createElement("button");
+        qr_code_element.appendChild(download);
+  
+        let download_link = document.createElement("a");
+        download_link.setAttribute("download", "qr_code.png");
+        download_link.innerHTML = `Download`;
+  
+        download.appendChild(download_link);
+  
+        let qr_code_img = document.querySelector(".qr-code img");
+        let qr_code_canvas = document.querySelector("canvas");
+  
+        if (qr_code_img.getAttribute("src") == null) {
+          setTimeout(() => {
+            download_link.setAttribute("href", `${qr_code_canvas.toDataURL()}`);
+          }, 300);
+        } else {
+          setTimeout(() => {
+            download_link.setAttribute("href", `${qr_code_img.getAttribute("src")}`);
+          }, 300);
+        }
+      }
+  
+    </script>
+  </div>
+  <%}%>
