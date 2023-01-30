@@ -32,32 +32,51 @@ router.get('/', auth.isLoggedIn, async function (req, res) {
     for(let prKey of Object.keys(proofRequests)) {
         proofRequests[prKey].string = prettyStringify(proofRequests[prKey]);
     }
+    
+    let images = [];
 
     let credentials = await indy.credentials.getAll();
     if (credentials) {
         credentials.map((item,index)=>{
             Object.keys(item.attrs).map(attr=>{
                 if (attr.includes('photo_url')) {
-                    credentials[index].attrs['photo_url'] = attr.replace("photo_url:", "");
+                    let photo_url = attr.replace("photo_url:", "");
+                    credentials[index].attrs['photo_url'] = photo_url;
+                    images.push(photo_url);
                     delete credentials[index].attrs[attr];
                 }
             })
         })
     }
     console.log("credentials = ", credentials)
+
     let relationships = await indy.pairwise.getAll();
+    let schemas = await indy.issuer.getSchemas();
+
+    if (schemas && config.userInformation.name == "Issuer Agency")  {
+        schemas.map(item => {
+            item.attrNames.map(attr=>{
+                if (attr.includes('photo_url')) {
+                    let photo_url = attr.replace("photo_url:", "");
+                    images.push(photo_url);
+                }
+            })
+        })
+    }
+    console.log("images = ", images)
 
     res.render('index', {
         messages: messages,
         messageTypes: messageTypes,
         relationships: relationships,
         credentials: credentials,
-        schemas: await indy.issuer.getSchemas(),
+        schemas,
         credentialDefinitions: await indy.did.getEndpointDidAttribute('credential_definitions'),
         endpointDid: await indy.did.getEndpointDid(),
         proofRequests: proofRequests,
         name: config.userInformation.name,
         srcId: config.userInformation.icon_src,
+        images,
         theme: THEME
     });
 

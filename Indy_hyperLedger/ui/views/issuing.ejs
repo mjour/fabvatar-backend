@@ -1,7 +1,7 @@
 <div id="issuing" class="tab" style="display:none;">
     <div class="w3-container w3-card w3-padding w3-margin" style="float: left;width: 31%">
         <h3>Create Schema: </h3>
-        <form method="POST" action="/api/issuer/create_schema">
+        <form method="POST" action="/api/issuer/create_schema" onsubmit="submit_btn(this); return false;">
             <label>Name of Schema: </label>
             <input type="text" class="w3-input" name="name_of_schema" value="Transcript">
             <br>
@@ -26,11 +26,15 @@
                 <div class="image_preview"></div>
                 <input type="hidden" id="photo_url" name="photo_url" value="" /> 
             </div>
-            <input class="w3-btn w3-white w3-border" type="submit">
+            <input class="w3-btn w3-white w3-border" id="submit-btn" name="submitbtn" type="submit">
         </form>
     </div>
 
     <script type="text/javascript">
+        function submit_btn(form) {
+            form.submitbtn.disabled = true;
+            form.submit();
+        }
         const input = document.querySelector('#photo_of_schema');
         const preview = document.querySelector('.image_preview');
 
@@ -59,11 +63,11 @@
                 const ipfs = window.IpfsHttpClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https', headers: {authorization: ipfs_auth}});
 
                 if (validFileType(file)) {
+                    var submit_btn = document.getElementById('submit-btn');
+                    if (submit_btn != null) submit_btn.disabled = true;  
                     const image = document.createElement('img');
                     image.width = 200;
                     image.height = 200;
-                    console.log(URL.createObjectURL(file))
-                    image.src = URL.createObjectURL(file);
                     listItem.appendChild(image);
                     const buffer_str = await file.arrayBuffer();
                     ipfs.add(Buffer(buffer_str), (err, result) => { // Upload buffer to IPFS
@@ -72,8 +76,10 @@
                             return
                         }
                         let url = `https://ipfs.io/ipfs/${result[0].hash}`
+                        image.src = url;
                         console.log(`Url --> ${url}`)
-                        document.getElementById("photo_url").value= url
+                        document.getElementById("photo_url").value= url;
+                        if (submit_btn != null) submit_btn.disabled = false;  
                     })
                 } else {
                     para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
@@ -112,7 +118,7 @@
     <div style="float: left;width: 31%">
         <div class="w3-container w3-card w3-padding w3-margin">
             <h3>Create Credential Definition</h3>
-            <form method="POST" action="/api/issuer/create_cred_def">
+            <form method="POST" action="/api/issuer/create_cred_def"  onsubmit="submit_btn(this); return false;">
                 <label>Select a Schema:</label>
                 <select class="w3-select" name="schema_id" required>
                     <%for(let schema of schemas) {%>
@@ -123,12 +129,12 @@
                 <label>Tag:</label>
                 <input class="w3-input" type="text" name="tag" value="MyTranscript" required>
                 <br><br>
-                <input class="w3-btn w3-white w3-border" type="submit">
+                <input class="w3-btn w3-white w3-border" type="submit" name="submitbtn">
             </form>
         </div>
         <div class="w3-container w3-card w3-padding w3-margin">
             <h3>Send Credential Offer</h3>
-            <form method="POST" action="/api/issuer/send_credential_offer">
+            <form method="POST" action="/api/issuer/send_credential_offer" onsubmit="submit_btn(this); return false;">
                 <label>Relationship: </label>
                 <select class="w3-select" name="their_relationship_did" required>
                     <%for(let relationship of relationships) {%>
@@ -143,7 +149,7 @@
                     <%}%>
                 </select>
                 <br><br>
-                <input class="w3-btn w3-white w3-border" type="submit">
+                <input class="w3-btn w3-white w3-border" type="submit" name="submitbtn">
             </form>
         </div>
     </div>
