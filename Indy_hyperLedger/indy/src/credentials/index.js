@@ -56,14 +56,6 @@ exports.acceptRequest = async function(theirDid, encryptedMessage) {
         let schema = await indy.issuer.getSchema(credentialOffer.schema_id);
         console.log("acceptRequest schema = ", schema);
         let credentialValues = {};
-        // for(let attr of schema.attrNames) {
-        //     if (attr != "") {
-        //         let split_str = attr.split(":");
-        //         let key = split_str[0];
-        //         let value = split_str[1] || '';
-        //         credentialValues[key] = {raw: value, encoded: exports.encode(value)};
-        //     }
-        // }
         for(let attr of schema.attrNames) {
             let value;
             switch(attr) {

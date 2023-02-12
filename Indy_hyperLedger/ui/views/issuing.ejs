@@ -20,8 +20,8 @@
 <br>
             <div style="margin-bottom: 1em;">
                 <div style="display:flex; margin-bottom:0.5rem;">
-                    <label style="margin-right: 0.5rem;">Photo: </label>
-                    <input type="file" id="photo_of_schema" name="photo_of_schema" accept="image/*"/>
+                    <label style="margin-right: 0.5rem;">Attach File: </label>
+                    <input type="file" id="photo_of_schema" name="photo_of_schema">
                 </div>
                 <div class="image_preview"></div>
                 <input type="hidden" id="photo_url" name="photo_url" value="" /> 
@@ -50,11 +50,11 @@
                 para.textContent = 'No file currently selected for upload';
                 preview.appendChild(para);
             } else {
-                const list = document.createElement('div');
-                preview.appendChild(list);
+                // const list = document.createElement('div');
+                // preview.appendChild(list);
 
                 const file = curFiles[0];
-                const listItem = document.createElement('div');
+                // const listItem = document.createElement('div');
                 const para = document.createElement('p');
                 const projectId = '277J4qfFtNMoU4VjPgwkSC7agwj'
                 const projectSecret = '25dbbdefd169318ba0dd5d82708f080a';
@@ -62,13 +62,13 @@
                 const ipfs_auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
                 const ipfs = window.IpfsHttpClient({ host: 'ipfs.infura.io', port: '5001', protocol: 'https', headers: {authorization: ipfs_auth}});
 
-                if (validFileType(file)) {
+                // if (validFileType(file)) {
                     var submit_btn = document.getElementById('submit-btn');
                     if (submit_btn != null) submit_btn.disabled = true;  
-                    const image = document.createElement('img');
-                    image.width = 200;
-                    image.height = 200;
-                    listItem.appendChild(image);
+                    // const image = document.createElement('img');
+                    // image.width = 200;
+                    // image.height = 200;
+                    // listItem.appendChild(image);
                     const buffer_str = await file.arrayBuffer();
                     ipfs.add(Buffer(buffer_str), (err, result) => { // Upload buffer to IPFS
                         if(err) {
@@ -76,16 +76,16 @@
                             return
                         }
                         let url = `https://ipfs.io/ipfs/${result[0].hash}`
-                        image.src = url;
+                        // image.src = url;
                         console.log(`Url --> ${url}`)
                         document.getElementById("photo_url").value= url;
                         if (submit_btn != null) submit_btn.disabled = false;  
                     })
-                } else {
-                    para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-                    listItem.appendChild(para);
-                }
-                list.appendChild(listItem);
+                // } else {
+                //     para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+                //     listItem.appendChild(para);
+                // }
+                // list.appendChild(listItem);
             }
         }
         const fileTypes = [
