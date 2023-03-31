@@ -267,7 +267,7 @@
                 let xhttp = new XMLHttpRequest();
                 xhttp.open('POST', '/api/proofs/validate', true);
                 xhttp.setRequestHeader('Content-Type', 'application/json');
-                console.log(proof);
+                console.log("proof = ", proof);
                 xhttp.send(JSON.stringify(proof));
                 xhttp.onload = function() {
                     console.log(xhttp);

@@ -48,6 +48,7 @@ router.post('/issuer/send_credential_offer', auth.isLoggedIn, async function (re
 router.post('/credentials/accept_offer', auth.isLoggedIn, async function(req, res) {
     let message = indy.store.messages.getMessage(req.body.messageId);
     indy.store.messages.deleteMessage(req.body.messageId);
+    if (message.message !== undefined && message.message != null)
     await indy.credentials.sendRequest(message.message.origin, message.message.message);
     res.redirect('/#messages');
 });
@@ -62,6 +63,7 @@ router.put('/connections/request', auth.isLoggedIn, async function (req, res) {
     let messageId = req.body.messageId;
     let message = indy.store.messages.getMessage(messageId);
     indy.store.messages.deleteMessage(messageId);
+    if (message.message !== undefined && message.message != null)
     await indy.connections.acceptRequest(name, message.message.message.endpointDid, message.message.message.did, message.message.message.nonce);
     res.redirect('/#relationships');
 });
@@ -97,6 +99,7 @@ router.post('/proofs/validate', auth.isLoggedIn, async function(req, res) {
             res.status(200).send();
         } else {
             res.status(400).send();
+            // res.status(200).send();
         }
     } catch(err) {
         res.status(500).send();

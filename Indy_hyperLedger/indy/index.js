@@ -16,11 +16,18 @@ exports.store = require('./src/store');
 exports.utils = require('./src/utils');
 
 exports.setupAgent = async function () {
-    await exports.pool.setup();
-    await exports.wallet.setup();
-    let endpointDid = await exports.did.getEndpointDid(); // Creates it if it doesn't exist
-    await exports.pool.setEndpointForDid(endpointDid, config.endpointDidEndpoint);
-    return Promise.resolve();
+    try {
+        console.log("indy /index.js")
+        await exports.pool.setup();
+        await exports.wallet.setup();
+        let endpointDid = await exports.did.getEndpointDid(); // Creates it if it doesn't exist
+        await exports.pool.setEndpointForDid(endpointDid, config.endpointDidEndpoint);
+        return Promise.resolve();
+    } catch (e) {
+        console.log("error found indy/index.js")
+        console.error(e)
+        return Promise.resolve();
+    }
 };
 
 

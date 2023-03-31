@@ -54,8 +54,12 @@ exports.pushAttribute = async function(theirDid, attribute, value) {
 
 // This will overwrite the old attribute if one exists.
 function setAttr(attr, metadata, proof, proofRequest) {
+    console.log("--------------pairwise setAttr -----------------")
+    console.log("proof = ", proof)
+    console.log("proofRequest = ", proofRequest)
+    
     for(let key of Object.keys(proofRequest.requested_attributes)) {
-        if(proofRequest.requested_attributes[key].name === attr) {
+        if(proofRequest.requested_attributes[key].name === attr && proof['requested_proof']['revealed_attrs'][key] !== undefined) {
             metadata[attr] = proof['requested_proof']['revealed_attrs'][key]['raw'];
         }
     }

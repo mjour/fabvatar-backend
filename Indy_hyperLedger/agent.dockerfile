@@ -14,13 +14,7 @@ USER indy
 
 WORKDIR $HOME
 
-RUN mkdir -p \
-        nodejs \
-        $HOME/ledger/sandbox/data \
-        $HOME/log \
-        $HOME/.indy-cli/networks \
-        $HOME/.indy_client/wallet \
-       chmod uga+rw $HOME/log $HOME/ledger $HOME/.indy-cli $HOME/.indy_client
+RUN mkdir nodejs
 WORKDIR nodejs
 
 ENV LD_LIBRARY_PATH=$HOME/.local/lib:/usr/local/lib:/usr/lib

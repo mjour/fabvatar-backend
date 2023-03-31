@@ -69,6 +69,7 @@ exports.pushEndpointDidAttribute = async function (attribute, item) {
 exports.getEndpointDidAttribute = async function (attribute) {
     let metadata = await sdk.getDidMetadata(await indy.wallet.get(), endpointDid);
     metadata = JSON.parse(metadata);
+    console.log("getEndpoinDidAddritue = ", metadata)
     return metadata[attribute];
 };
 

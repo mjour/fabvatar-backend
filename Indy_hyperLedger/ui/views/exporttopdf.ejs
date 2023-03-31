@@ -7,7 +7,6 @@
           <script type="text/javascript">
               $("#btnPrint-<%=credential.referent%>").live("click", function () {
                   var divContents = $("#dvContainer-<%=credential.referent%>").html();
-                  console.log("divContents = ", divContents)
                   var printWindow = window.open('', '', 'height=400,width=800');
                   printWindow.document.write('<html><head><title>DIV Contents</title>');
                   printWindow.document.write('</head><body >');

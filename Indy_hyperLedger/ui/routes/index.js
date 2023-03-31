@@ -21,10 +21,14 @@ router.get('/', auth.isLoggedIn, async function (req, res) {
     let rawMessages = indy.store.messages.getAll();
     let messages = [];
     for (let message of rawMessages) {
-        if (messageParsers[message.message.type]) {
-            messages.push(await messageParsers[message.message.type](message));
-        } else {
-            messages.push(message);
+        console.log("message ==================================|  ", message)
+        if (message.message !== undefined && message.message.type !== undefined) {
+            if (messageParsers[message.message.type]) {
+                messages.push(await messageParsers[message.message.type](message));
+            } else {
+                messages.push(message);
+            }
+
         }
     }
 
@@ -53,7 +57,7 @@ router.get('/', auth.isLoggedIn, async function (req, res) {
     let relationships = await indy.pairwise.getAll();
     let schemas = await indy.issuer.getSchemas();
 
-    if (schemas && config.userInformation.name == "Issuer Agency")  {
+    // if (schemas && config.userInformation.name == "Issuer Agency")  {
         schemas.map(item => {
             item.attrNames.map(attr=>{
                 if (attr.includes('photo_url')) {
@@ -62,7 +66,7 @@ router.get('/', auth.isLoggedIn, async function (req, res) {
                 }
             })
         })
-    }
+    // }
     console.log("images = ", images)
 
     res.render('index', {

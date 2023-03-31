@@ -54,8 +54,13 @@ exports.getCredDef = async function(poolHandle, did, credDefId) {
 exports.getCredDefByTag = async function(credDefTag) {
     let credDefs = await indy.did.getEndpointDidAttribute('credential_definitions');
     for(let credDef of credDefs) {
+        console.log("credDef.tag = ", credDef.tag)
         if(credDef.tag === credDefTag) {
             return credDef;
         }
     }
+};
+
+exports.getAllCredDefs = async function() {
+    return await indy.did.getEndpointDidAttribute('credential_definitions');
 };

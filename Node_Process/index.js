@@ -5,7 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const userRouter = require('./routes/user');
-
+const sdk = require('indy-sdk');
 const app = express();
 
 require('./db/connection');

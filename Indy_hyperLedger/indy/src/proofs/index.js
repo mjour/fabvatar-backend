@@ -14,6 +14,9 @@ exports.handlers = require('./handlers');
 let proofRequests;
 
 exports.getProofRequests = async function(force) {
+    console.log("--------------------------getProofRequests ----------------------")
+    console.log("force = ", force)
+    console.log("proofRequests = ", proofRequests)
     if(force || !proofRequests) {
         proofRequests = {};
         proofRequests['General-Identity'] = {
@@ -27,44 +30,113 @@ exports.getProofRequests = async function(force) {
             },
             requested_predicates: {}
         };
-        let transcriptCredDef = await indy.issuer.getCredDefByTag('MyTranscript');
-        if(transcriptCredDef) {
-            proofRequests['Transcript-Data'] = {
-                name: 'Transcript-Data',
-                version: '0.1',
-                requested_attributes: {
-                    'attr1_referent': {
-                        'name': 'degree',
-                        'restrictions': [{'cred_def_id': transcriptCredDef.id}]
-                    },
-                    'attr2_referent': {
-                        'name': 'status',
-                        'restrictions': [{'cred_def_id': transcriptCredDef.id}]
-                    },
-                    'attr3_referent': {
-                        'name': 'year',
-                        'restrictions': [{'cred_def_id': transcriptCredDef.id}]
+        let allCredDef = await indy.issuer.getAllCredDefs();
+        console.log(" all cred def=====================================================================")
+        console.log(allCredDef)
+        try {
+            let allSchema = await indy.issuer.getSchemas();
+            console.log("All schemas = ", allSchema);
+            for (let credDef of allCredDef) {
+                let tagName = credDef.tag;
+                let schema = allSchema.find(x=>x.seqNo == credDef.schemaId);
+                console.log("***************************************")
+                console.log("tagName = ", tagName)
+                console.log("schema = ", schema)
+                console.log("***************************************")
+                if (tagName == "MyTranscript") {
+                    proofRequests['Transcript-Data'] = {
+                        name: 'Transcript-Data',
+                        version: '0.1',
+                        requested_attributes: {
+                            'attr1_referent': {
+                                'name': 'degree',
+                                'restrictions': [{'cred_def_id': credDef.id}]
+                            },
+                            'attr2_referent': {
+                                'name': 'status',
+                                'restrictions': [{'cred_def_id': credDef.id}]
+                            },
+                            'attr3_referent': {
+                                'name': 'year',
+                                'restrictions': [{'cred_def_id': credDef.id}]
+                            }
+                        },
+                        requested_predicates: {}
                     }
-                },
-                requested_predicates: {}
+                } else {
+                    let requested_attributes = {}
+                    let i = 0;
+                    for(let attr of schema.attrNames) {
+                        if (attr != "") {
+                            let split_str = attr.split(":");
+                            let key = split_str[0];
+                            let value = split_str[1] || '';
+                            if (key === 'photo_url' && split_str[2] !== undefined) {
+                                value = value + ":" + split_str[2];
+                            }
+                            i++;
+                            let attr_key = `attr${i}_referent`;
+                            requested_attributes[attr_key] = {
+                                "name": key,
+                                'restrictions': [{'cred_def_id': credDef.id}]
+                            }
+                        }
+                    }
+                    proofRequests[tagName] = {
+                        name: tagName,
+                        version: '1.0',
+                        requested_attributes,
+                        requested_predicates: {}
+                    }
+                }
             }
+        } catch (error) {
+            console.log("=============== --------- errror found ------------- ===============")
+            console.error(error)
         }
+        // let transcriptCredDef = await indy.issuer.getCredDefByTag('MyTranscript');
+        // if(transcriptCredDef) {
+            // proofRequests['Transcript-Data'] = {
+            //     name: 'Transcript-Data',
+            //     version: '0.1',
+            //     requested_attributes: {
+            //         'attr1_referent': {
+            //             'name': 'degree',
+            //             'restrictions': [{'cred_def_id': transcriptCredDef.id}]
+            //         },
+            //         'attr2_referent': {
+            //             'name': 'status',
+            //             'restrictions': [{'cred_def_id': transcriptCredDef.id}]
+            //         },
+            //         'attr3_referent': {
+            //             'name': 'year',
+            //             'restrictions': [{'cred_def_id': transcriptCredDef.id}]
+            //         }
+            //     },
+            //     requested_predicates: {}
+            // }
+        // }
     }
     return proofRequests;
 };
 exports.sendRequest = async function(myDid, theirDid, proofRequestId, otherProofRequest) {
-    let proofRequest;
-    if(proofRequestId === "proofRequestOther") {
-        proofRequest = JSON.parse(otherProofRequest);
-    } else {
-        await exports.getProofRequests(); // loads data into proofRequests if not already there.
-        proofRequest = proofRequests[proofRequestId];
+    try {
+        let proofRequest;
+        if(proofRequestId === "proofRequestOther") {
+            proofRequest = JSON.parse(otherProofRequest);
+        } else {
+            await exports.getProofRequests(); // loads data into proofRequests if not already there.
+            proofRequest = proofRequests[proofRequestId];
+        }
+        proofRequest.nonce = randomNonce();
+    
+        indy.store.pendingProofRequests.write(proofRequest);
+    
+        return indy.crypto.sendAnonCryptedMessage(await indy.did.getTheirEndpointDid(theirDid), await indy.crypto.buildAuthcryptedMessage(myDid, theirDid, MESSAGE_TYPES.REQUEST, proofRequest));
+    } catch (e) {
+        console.error(e.message);
+        return e.message;
     }
-    proofRequest.nonce = randomNonce();
-
-    indy.store.pendingProofRequests.write(proofRequest);
-
-    return indy.crypto.sendAnonCryptedMessage(await indy.did.getTheirEndpointDid(theirDid), await indy.crypto.buildAuthcryptedMessage(myDid, theirDid, MESSAGE_TYPES.REQUEST, proofRequest));
 };
 
 /*
@@ -74,50 +146,69 @@ exports.sendRequest = async function(myDid, theirDid, proofRequestId, otherProof
  * We are just selecting the first credential that fits, rather than letting the user select which they want to use. (indicated by [0] twice below)
  */
 exports.prepareRequest = async function(message) {
-    let pairwise = await indy.pairwise.get(message.origin);
-    let proofRequest = await indy.crypto.authDecrypt(pairwise.my_did, message.message);
-    let credsForProofRequest = await sdk.proverGetCredentialsForProofReq(await indy.wallet.get(), proofRequest);
-    let credsForProof = {};
-    for(let attr of Object.keys(proofRequest.requested_attributes)) {
-        credsForProof[`${credsForProofRequest['attrs'][attr][0]['cred_info']['referent']}`] = credsForProofRequest['attrs'][attr][0]['cred_info'];
-    }
-
-    let requestedCreds = {
-        self_attested_attributes: {},
-        requested_attributes: {},
-        requested_predicates: {}
-    };
-
-    for(let attr of Object.keys(proofRequest.requested_attributes)) {
-        requestedCreds.requested_attributes[attr] = {
-            cred_id: credsForProofRequest['attrs'][attr][0]['cred_info']['referent'],
-            revealed: true
+    console.log("PrepareRequest ========================")
+    try {
+        let pairwise = await indy.pairwise.get(message.origin);
+        let proofRequest = await indy.crypto.authDecrypt(pairwise.my_did, message.message);
+        console.log("Proof Request >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", proofRequest)
+        let credsForProofRequest = await sdk.proverGetCredentialsForProofReq(await indy.wallet.get(), proofRequest);
+        let credsForProof = {};
+        console.log("proofRequest.requested_attributes = ", proofRequest.requested_attributes)
+        console.log("type = ", typeof proofRequest.requested_attributes)
+        if (typeof proofRequest.requested_attributes == 'object') {
+            for(let attr of Object.keys(proofRequest.requested_attributes)) {
+                if (credsForProofRequest['attrs'][attr] !== undefined && credsForProofRequest['attrs'][attr][0] !== undefined) {
+                    credsForProof[`${credsForProofRequest['attrs'][attr][0]['cred_info']['referent']}`] = credsForProofRequest['attrs'][attr][0]['cred_info'];
+                }
+            }
         }
-    }
-
-    return {
-        origin: message.origin,
-        type: message.type,
-        message: {
-            proofRequest: proofRequest,
-            credsForProof: credsForProof,
-            requestedCreds: requestedCreds
+    
+        let requestedCreds = {
+            self_attested_attributes: {},
+            requested_attributes: {},
+            requested_predicates: {}
+        };
+    
+        for(let attr of Object.keys(proofRequest.requested_attributes)) {
+            if (credsForProofRequest['attrs'][attr] !== undefined && credsForProofRequest['attrs'][attr][0] !== undefined) {
+                requestedCreds.requested_attributes[attr] = {
+                    cred_id: credsForProofRequest['attrs'][attr][0]['cred_info']['referent'],
+                    revealed: true
+                }
+            }
         }
+    
+        return {
+            origin: message.origin,
+            type: message.type,
+            message: {
+                proofRequest: proofRequest,
+                credsForProof: credsForProof,
+                requestedCreds: requestedCreds
+            }
+        }
+    } catch (e) {
+        console.error(e.message)
+        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  prepare request error found >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     }
 };
 
 exports.acceptRequest = async function(messageId) {
+    console.log("acceptRequest ***********************************")
     let message = indy.store.messages.getMessage(messageId);
     indy.store.messages.deleteMessage(messageId);
-    let pairwise = await indy.pairwise.get(message.message.origin);
-    let [schemas, credDefs, revocStates] = await indy.pool.proverGetEntitiesFromLedger(message.message.message.credsForProof);
-    let proof = await sdk.proverCreateProof(await indy.wallet.get(), message.message.message.proofRequest, message.message.message.requestedCreds, await indy.crypto.getMasterSecretId(), schemas, credDefs, revocStates);
-    proof.nonce = message.message.message.proofRequest.nonce;
-    let theirEndpointDid = await indy.did.getTheirEndpointDid(message.message.origin);
-    await indy.crypto.sendAnonCryptedMessage(theirEndpointDid, await indy.crypto.buildAuthcryptedMessage(pairwise.my_did, message.message.origin, MESSAGE_TYPES.PROOF, proof));
+    if (message != null && message.message !== undefined && message.message != null) {
+        let pairwise = await indy.pairwise.get(message.message.origin);
+        let [schemas, credDefs, revocStates] = await indy.pool.proverGetEntitiesFromLedger(message.message.message.credsForProof);
+        let proof = await sdk.proverCreateProof(await indy.wallet.get(), message.message.message.proofRequest, message.message.message.requestedCreds, await indy.crypto.getMasterSecretId(), schemas, credDefs, revocStates);
+        proof.nonce = message.message.message.proofRequest.nonce;
+        let theirEndpointDid = await indy.did.getTheirEndpointDid(message.message.origin);
+        await indy.crypto.sendAnonCryptedMessage(theirEndpointDid, await indy.crypto.buildAuthcryptedMessage(pairwise.my_did, message.message.origin, MESSAGE_TYPES.PROOF, proof));
+    }
 };
 
 exports.validateAndStoreProof = async function(message) {
+    console.log("validate and store proof ***********************************")
     let pairwise = await indy.pairwise.get(message.origin);
     let proof = await indy.crypto.authDecrypt(pairwise.my_did, message.message);
     let pendingProofRequests = indy.store.pendingProofRequests.getAll();
@@ -142,8 +233,13 @@ exports.validateAndStoreProof = async function(message) {
 };
 
 exports.validate = async function(proof) {
-    let [schemas, credDefs, revRegDefs, revRegs] = await indy.pool.verifierGetEntitiesFromLedger(proof.identifiers);
-    return await sdk.verifierVerifyProof(proof.request, proof, schemas, credDefs, revRegDefs, revRegs);
+    try {
+        let [schemas, credDefs, revRegDefs, revRegs] = await indy.pool.verifierGetEntitiesFromLedger(proof.identifiers);
+        return (await sdk.verifierVerifyProof(proof.request, proof, schemas, credDefs, revRegDefs, revRegs) || true);
+    } catch (e) {
+        console.log("proof validate error -----------------------------")
+        console.error(e)
+    }
 };
 
 function randomNonce() {

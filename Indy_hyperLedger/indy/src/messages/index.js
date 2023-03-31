@@ -6,6 +6,8 @@ const request = require('request-promise');
 
 // FIXME: Assumption: Their endpoint did has an endpoint attribute
 exports.sendMessage = function (endpoint, message) {
+    console.log("endpoint = ", endpoint)
+    console.log("message = ", message)
     let requestOptions = {
         uri: `http://${endpoint}/indy`,
         method: 'POST',

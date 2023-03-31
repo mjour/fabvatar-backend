@@ -35,7 +35,7 @@ async def index(request):
 
 @ROUTES.get('/favicon.ico')
 async def favicon(request):
-  return web.FileResponse('./static/favicon.ico')
+  return web.FileResponse('static/favicon.ico')
 
 ROUTES.static('/include', './static/include')
 

@@ -11,6 +11,7 @@
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
     "bcryptjs": "^2.4.3",
+    "bindings": "^1.5.0",
     "cloudinary": "^1.32.0",
     "config": "^3.3.8",
     "cors": "^2.8.5",
@@ -25,6 +26,7 @@
     "qrcode": "^1.5.1",
     "shelljs": "^0.8.5",
     "swagger-jsdoc": "^4.3.2",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "indy-sdk": "1.6.1"
   }
 }
