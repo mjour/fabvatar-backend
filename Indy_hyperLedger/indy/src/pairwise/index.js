@@ -11,6 +11,7 @@ exports.getAll = async function () {
     let relationships = await sdk.listPairwise(await indy.wallet.get());
     for (let relationship of relationships) {
         relationship.metadata = JSON.parse(relationship.metadata);
+        console.log("relationship.metadata = ", relationship.metadata)
         if(!relationship.metadata.name) {
             relationship.metadata.name = `Endpoint DID: ${relationship.metadata.theirEndpointDid}`;
         }

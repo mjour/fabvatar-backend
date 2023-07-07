@@ -181,6 +181,286 @@ services:
         ipv4_address: 173.17.0.162
     volumes:
       - node1-data:/home/indy/ledger
+  CheckFix:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3034'
+      NAME: CheckFix
+      email: cfix@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.184:3034
+      RUST_LOG: 173.17.0.184
+    ports:
+      - '3034:3034'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.184
+    volumes:
+      - node1-data:/home/indy/ledger
+  Testuser:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3035'
+      NAME: Testuser
+      email: test@user.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.185:3035
+      RUST_LOG: 173.17.0.185
+    ports:
+      - '3035:3035'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.185
+    volumes:
+      - node1-data:/home/indy/ledger
+  CarlLewis:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3036'
+      NAME: CarlLewis
+      email: clewis@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.186:3036
+      RUST_LOG: 173.17.0.186
+    ports:
+      - '3036:3036'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.186
+    volumes:
+      - node1-data:/home/indy/ledger
+  AndyJones:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3037'
+      NAME: AndyJones
+      email: ajones@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.187:3037
+      RUST_LOG: 173.17.0.187
+    ports:
+      - '3037:3037'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.187
+    volumes:
+      - node1-data:/home/indy/ledger
+  NewUser:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3038'
+      NAME: NewUser
+      email: nuser@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.188:3038
+      RUST_LOG: 173.17.0.188
+    ports:
+      - '3038:3038'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.188
+    volumes:
+      - node1-data:/home/indy/ledger
+  User:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3039'
+      NAME: User
+      email: firetortoise@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.189:3039
+      RUST_LOG: 173.17.0.189
+    ports:
+      - '3039:3039'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.189
+    volumes:
+      - node1-data:/home/indy/ledger
+  AdamDan:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3040'
+      NAME: AdamDan
+      email: adan@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.190:3040
+      RUST_LOG: 173.17.0.190
+    ports:
+      - '3040:3040'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.190
+    volumes:
+      - node1-data:/home/indy/ledger
+  MikeTyson:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3041'
+      NAME: MikeTyson
+      email: mtyson@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.191:3041
+      RUST_LOG: 173.17.0.191
+    ports:
+      - '3041:3041'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.191
+    volumes:
+      - node1-data:/home/indy/ledger
+  Mehrak:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3042'
+      NAME: Mehrak
+      email: massadiandc@me.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.192:3042
+      RUST_LOG: 173.17.0.192
+    ports:
+      - '3042:3042'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.192
+    volumes:
+      - node1-data:/home/indy/ledger
+  AndrewFlint:
+    image: indy-agentjs
+    build:
+      context: .
+      dockerfile: agent.dockerfile
+    command: bash -c 'sleep 10; npm start'
+    environment:
+      PORT: '3043'
+      NAME: AndrewFlint
+      email: aflint@gmail.com
+      PASSWORD: 1234
+      ICON_SRC: >-
+        http://www.clker.com/cliparts/g/l/R/7/h/u/teamstijl-person-icon-blue-hi.png
+      THEME: BurlyWood
+      PUBLIC_DID_ENDPOINT: 173.17.0.193:3043
+      RUST_LOG: 173.17.0.193
+    ports:
+      - '3043:3043'
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+    networks:
+      services:
+        ipv4_address: 173.17.0.193
+    volumes:
+      - node1-data:/home/indy/ledger
 volumes:
   webserver-cli: null
   node1-data: null

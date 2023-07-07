@@ -41,7 +41,9 @@
                                     <div class="w3-bar-item">
                                         <p style="text-decoration: underline;"><%=proof.request.name%></p>
                                         <%for(let attr of Object.keys(proof.request.requested_attributes)) {%>
-                                            <p><%=proof.request.requested_attributes[attr].name%>: <%=proof.requested_proof.revealed_attrs[attr].raw%></p>
+                                            <%if(proof.request.requested_attributes[attr] !== undefined && proof.requested_proof.revealed_attrs[attr] !== undefined) {%>
+                                                <p><%=proof.request.requested_attributes[attr].name%>: <%=proof.requested_proof.revealed_attrs[attr].raw%></p>
+                                            <%}%>
                                         <%}%>
                                     </div>
                                     <div class="w3-bar-item">
